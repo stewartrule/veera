@@ -7,7 +7,6 @@ import '../selectors/selectors.dart';
 import '../reducers/root_reducer.dart';
 
 import '../models/footwear_model.dart';
-// import '../view_models/footwear_view_model.dart';
 
 class FootwearScreen extends StatelessWidget {
   FootwearScreen({Key key, this.title}) : super(key: key);
