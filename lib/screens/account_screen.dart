@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
+import '../models/user_model.dart';
 import '../reducers/root_reducer.dart';
 import '../view_models/account_view_model.dart';
+
+import '../widgets/avatar.dart';
+import '../widgets/badge.dart';
 
 class AccountScreen extends StatelessWidget {
   AccountScreen({Key key, this.title}) : super(key: key);
@@ -22,7 +25,6 @@ class AccountScreen extends StatelessWidget {
         ],
       ),
       body: StoreConnector<RootState, AccountViewModel>(
-        // distinct: true,
         converter: AccountViewModel.fromStore,
         builder: (BuildContext context, AccountViewModel vm) {
           return LayoutBuilder(
@@ -50,7 +52,7 @@ class AccountScreen extends StatelessWidget {
 class AccountMenu extends StatelessWidget {
   final UserModel user;
 
-  AccountMenu({this.user});
+  AccountMenu({Key key, this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -135,42 +137,10 @@ class ListItem extends StatelessWidget {
   }
 }
 
-class Badge extends StatelessWidget {
-  final int count;
-  final double size;
-
-  Badge({
-    this.count,
-    this.size = 16,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        gradient: LinearGradient(
-          colors: [
-            Colors.blue.shade400,
-            Colors.blue,
-          ],
-        ),
-      ),
-      child: Text(
-        count.toString(),
-        style: TextStyle(color: Colors.white),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-}
-
 class UserListItem extends StatelessWidget {
   final UserModel user;
 
-  UserListItem({this.user});
+  UserListItem({Key key, this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -206,34 +176,6 @@ class UserListItem extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class Avatar extends StatelessWidget {
-  final String src;
-  final EdgeInsets margin;
-  final double size;
-
-  Avatar({
-    this.src,
-    this.size = 48,
-    this.margin = const EdgeInsets.only(right: 8),
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      margin: margin,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(size / 2),
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(src),
         ),
       ),
     );
