@@ -29,16 +29,19 @@ class FootwearScreen extends StatelessWidget {
           return getFootwear(store.state);
         },
         builder: (BuildContext context, List<FootwearModel> footwear) {
-          return GridView.count(
-            physics: ScrollPhysics(),
-            crossAxisCount: 2,
-            mainAxisSpacing: 8,
-            childAspectRatio: 0.5,
-            crossAxisSpacing: 8,
+          return Padding(
             padding: EdgeInsets.all(8),
-            children: footwear
-                .map((product) => FootwearItem(product: product))
-                .toList(),
+            child: GridView.count(
+              physics: ScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: 8,
+              childAspectRatio: 0.5,
+              crossAxisSpacing: 8,
+              padding: EdgeInsets.all(8),
+              children: footwear
+                  .map((product) => FootwearItem(product: product))
+                  .toList(),
+            ),
           );
         },
       ),
@@ -69,11 +72,13 @@ class FootwearItem extends StatelessWidget {
             ),
           ),
         ),
+        SizedBox(height: 8),
         Text(
           product.name.toUpperCase(),
+          maxLines: 2,
           style: TextStyle(
             fontFamily: 'RobotoCondensed',
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w600,
             color: Color(0xff333333),
             fontSize: 16,
             height: 1,

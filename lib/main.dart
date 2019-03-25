@@ -14,12 +14,16 @@ import './models/account_model.dart';
 import './models/settings_model.dart';
 
 import './reducers/root_reducer.dart';
+
 import './screens/account_screen.dart';
 import './screens/footwear_screen.dart';
+import './screens/footwear_categories_screen.dart';
 
 class Routes {
-  static const String Home = '/';
+  // static const String Home = '/';
+  static const String Account = '/account';
   static const String Footwear = '/footwear';
+  static const String FootwearCategories = '/';
 }
 
 class StoreUIKit extends StatelessWidget {
@@ -35,12 +39,14 @@ class StoreUIKit extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: 'RobotoCondensed'),
         title: 'Store UI Kit',
-        initialRoute: Routes.Footwear,
+        initialRoute: Routes.FootwearCategories,
         routes: {
-          Routes.Home: (BuildContext context) =>
+          Routes.FootwearCategories: (BuildContext context) =>
+              FootwearCategoriesScreen(title: 'Footwear Categories'),
+          Routes.Account: (BuildContext context) =>
               AccountScreen(title: 'Account'),
           Routes.Footwear: (BuildContext context) =>
-              FootwearScreen(title: 'Footwear')
+              FootwearScreen(title: 'Footwear'),
         },
       ),
     );
