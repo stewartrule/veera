@@ -89,17 +89,95 @@ class CategoryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(8),
-      child: GridView.count(
-        physics: ScrollPhysics(),
-        crossAxisCount: 2,
-        mainAxisSpacing: 8,
-        childAspectRatio: 0.5,
-        crossAxisSpacing: 8,
-        padding: EdgeInsets.all(8),
-        children:
-            footwear.map((product) => FootwearItem(product: product)).toList(),
+    return Container(
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                HorizontalList(footwear: footwear),
+              ],
+            ),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.all(24),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.5,
+                crossAxisSpacing: 16,
+              ),
+              delegate: SliverChildListDelegate(
+                footwear
+                    .map((product) => FootwearItem(product: product))
+                    .toList(),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class HorizontalList extends StatelessWidget {
+  final List<FootwearModel> footwear;
+  final double itemWidth;
+  final double itemHeight;
+  final double spacing;
+
+  const HorizontalList({
+    Key key,
+    @required this.footwear,
+    this.itemWidth = 200,
+    this.itemHeight = 200,
+    this.spacing = 24,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: itemHeight,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: footwear
+            .asMap()
+            .map(
+              (index, product) => MapEntry(
+                    index,
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(
+                        left: spacing,
+                        right: index == footwear.length - 1 ? spacing : 0,
+                      ),
+                      width: itemWidth,
+                      height: itemHeight,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage(
+                            'assets/images/pexels-photo-296881.jpg',
+                          ),
+                        ),
+                      ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Positioned(
+                            left: itemWidth / 2,
+                            child: Text(
+                              product.name,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+            )
+            .values
+            .toList(),
       ),
     );
   }
