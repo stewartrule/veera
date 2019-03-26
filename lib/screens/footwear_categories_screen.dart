@@ -41,7 +41,7 @@ class FootwearCategoriesScreen extends StatelessWidget {
                           image: DecorationImage(
                             fit: BoxFit.cover,
                             image: AssetImage(
-                              'assets/images/12213240-1-multi.jpeg',
+                              'assets/images/pexels-photo-296881.jpg',
                             ),
                           ),
                         ),
@@ -169,7 +169,7 @@ class _FootwearCategoryItem extends StatelessWidget {
             image: DecorationImage(
               fit: BoxFit.cover,
               image: AssetImage(
-                'assets/images/12213240-1-multi.jpeg',
+                'assets/images/jeans.jpg',
               ),
             ),
           ),

@@ -3,9 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 import '../selectors/selectors.dart';
-
 import '../reducers/root_reducer.dart';
-
 import '../models/footwear_model.dart';
 
 class FootwearScreen extends StatelessWidget {
@@ -61,7 +59,7 @@ class FootwearItem extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          height: 240,
+          height: 200,
           decoration: BoxDecoration(
             image: DecorationImage(
               fit: BoxFit.cover,

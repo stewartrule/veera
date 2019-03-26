@@ -1,11 +1,10 @@
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter/material.dart';
+
 import '../models/brand_model.dart';
 import '../models/footwear_model.dart';
 import '../models/footwear_category_model.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-
 import '../reducers/root_reducer.dart';
-
 import './footwear_screen.dart' show FootwearItem;
 
 class CategoryViewModel {
