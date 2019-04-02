@@ -55,7 +55,7 @@ List<FootwearSizeModel> getFootwearSizes(RootState state) {
 }
 
 FootwearSizeModel getFootwearSizeById(RootState state, int id) {
-  return getSettings(state).footwearSizes[id];
+  return getSettings(state).footwearSizes[id.toString()];
 }
 
 AccountModel getAccount(RootState state) {
@@ -75,7 +75,7 @@ List<HslModel> getColors(RootState state) {
 }
 
 HslModel getColorById(RootState state, int id) {
-  return state.settings.colors[id];
+  return state.settings.colors[id.toString()];
 }
 
 List<FootwearModel> getFootwear(RootState state) {
@@ -83,5 +83,5 @@ List<FootwearModel> getFootwear(RootState state) {
 }
 
 FootwearModel getFootwearById(RootState state, int id) {
-  return state.footwear[id];
+  return state.footwear[id.toString()];
 }

@@ -6,7 +6,10 @@ class HttpClient {
   Client client;
   String baseUrl;
 
-  HttpClient({this.client, this.baseUrl});
+  HttpClient({
+    this.client,
+    this.baseUrl,
+  });
 
   Future<Map<String, dynamic>> get(String path) {
     return client

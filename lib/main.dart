@@ -22,7 +22,7 @@ void main() {
   AppConfig app = AppConfig(
     client: client,
     title: 'Dev',
-    child: new App(store: store),
+    child: App(store: store),
   );
 
   runApp(app);

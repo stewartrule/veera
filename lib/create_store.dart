@@ -11,12 +11,13 @@ import './actions/footwear_actions.dart';
 import './actions/settings_actions.dart';
 
 import './models/account_model.dart';
+import './models/basket_model.dart';
 import './models/settings_model.dart';
 
 import './reducers/root_reducer.dart';
 
 Store<RootState> createStore(HttpClient client) {
-  final store = new Store<RootState>(
+  final store = Store<RootState>(
     rootStateReducer,
     middleware: []
       ..addAll(createAccountMiddleware(client))
@@ -24,8 +25,9 @@ Store<RootState> createStore(HttpClient client) {
       ..addAll(createFootwearMiddleware(client)),
     initialState: RootState(
       account: AccountModel.initialState(),
-      settings: SettingsModel.initialState(),
+      basket: BasketModel(items: []),
       footwear: Map(),
+      settings: SettingsModel.initialState(),
     ),
   );
 
