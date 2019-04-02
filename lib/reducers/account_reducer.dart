@@ -11,7 +11,7 @@ AccountModel updateAccountReducer(
 }
 
 Reducer<AccountModel> accountReducer = combineReducers([
-  new TypedReducer<AccountModel, FetchAccountCompletedAction>(
+  TypedReducer<AccountModel, FetchAccountCompletedAction>(
     updateAccountReducer,
   ),
 ]);

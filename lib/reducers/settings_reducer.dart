@@ -11,7 +11,7 @@ SettingsModel updateSettingsReducer(
 }
 
 Reducer<SettingsModel> settingsReducer = combineReducers([
-  new TypedReducer<SettingsModel, FetchSettingsCompletedAction>(
+  TypedReducer<SettingsModel, FetchSettingsCompletedAction>(
     updateSettingsReducer,
   ),
 ]);
