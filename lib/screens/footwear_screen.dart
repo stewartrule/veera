@@ -6,6 +6,8 @@ import '../selectors/selectors.dart';
 import '../reducers/root_reducer.dart';
 import '../models/footwear_model.dart';
 
+import './footwear_detail_screen.dart';
+
 class FootwearScreen extends StatelessWidget {
   FootwearScreen({Key key, this.title}) : super(key: key);
 
@@ -54,42 +56,52 @@ class FootwearItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: double.infinity,
-          height: 200,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              alignment: Alignment.topCenter,
-              image: AssetImage(
-                'assets/images/12213240-1-multi.jpeg',
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FootwearDetailScreen(product: product),
+          ),
+        );
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            height: 200,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+                image: AssetImage(
+                  'assets/images/12213240-1-multi.jpeg',
+                ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          product.name.toUpperCase(),
-          maxLines: 2,
-          style: TextStyle(
-            fontFamily: 'RobotoCondensed',
-            fontWeight: FontWeight.w600,
-            color: Color(0xff333333),
-            fontSize: 16,
-            height: 1,
+          SizedBox(height: 8),
+          Text(
+            product.name.toUpperCase(),
+            maxLines: 2,
+            style: TextStyle(
+              fontFamily: 'RobotoCondensed',
+              fontWeight: FontWeight.w600,
+              color: Color(0xff333333),
+              fontSize: 16,
+              height: 1,
+            ),
           ),
-        ),
-        Text(
-          "\$${product.price / 100}",
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            color: Color(0xff777777),
+          Text(
+            "\$${product.price / 100}",
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              color: Color(0xff777777),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
