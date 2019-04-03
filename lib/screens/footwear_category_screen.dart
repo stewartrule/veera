@@ -1,6 +1,8 @@
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter/material.dart';
 
+import '../util/cdn_image.dart';
+
 import '../models/brand_model.dart';
 import '../models/footwear_model.dart';
 import '../models/footwear_category_model.dart';
@@ -38,15 +40,19 @@ class FootwearCategoryScreen extends StatelessWidget {
                 iconTheme: IconThemeData(color: Colors.red),
                 backgroundColor: Colors.white,
                 bottom: TabBar(
-                  indicatorColor: Colors.black,
+                  indicatorColor: Colors.white,
                   indicatorWeight: 1,
                   isScrollable: true,
+                  labelStyle: TextStyle(color: Colors.grey),
                   tabs: vm.brands
                       .map(
                         (brand) => Tab(
                               child: Text(
                                 brand.name.toUpperCase(),
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'RobotoCondensed',
+                                ),
                               ),
                             ),
                       )
@@ -91,11 +97,14 @@ class CategoryView extends StatelessWidget {
     return Container(
       child: CustomScrollView(
         slivers: <Widget>[
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                HorizontalList(footwear: footwear),
-              ],
+          SliverPadding(
+            padding: EdgeInsets.only(top: 24),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  HorizontalList(footwear: footwear),
+                ],
+              ),
             ),
           ),
           SliverPadding(
@@ -107,7 +116,7 @@ class CategoryView extends StatelessWidget {
                 crossAxisSpacing: 16,
               ),
               delegate: SliverChildListDelegate(
-                footwear
+                footwear.reversed
                     .map((product) => FootwearItem(product: product))
                     .toList(),
               ),
@@ -128,9 +137,9 @@ class HorizontalList extends StatelessWidget {
   const HorizontalList({
     Key key,
     @required this.footwear,
-    this.itemWidth = 200,
-    this.itemHeight = 200,
-    this.spacing = 24,
+    this.itemWidth = 256,
+    this.itemHeight = 256,
+    this.spacing = 16,
   }) : super(key: key);
 
   @override
@@ -145,29 +154,38 @@ class HorizontalList extends StatelessWidget {
               (index, product) => MapEntry(
                     index,
                     Container(
-                      alignment: Alignment.center,
+                      // alignment: Alignment.center,
                       margin: EdgeInsets.only(
-                        left: spacing,
-                        right: index == footwear.length - 1 ? spacing : 0,
+                        left: index == 0 ? 24 : spacing,
+                        right: index == footwear.length - 1 ? 24 : 0,
                       ),
                       width: itemWidth,
                       height: itemHeight,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage(
-                            'assets/images/pexels-photo-296881.jpg',
-                          ),
+                          image: cdnImage(product.image),
                         ),
                       ),
                       child: Stack(
-                        alignment: Alignment.center,
+                        alignment: Alignment.topRight,
                         children: <Widget>[
                           Positioned(
-                            left: itemWidth / 2,
+                            right: 16,
+                            left: (itemWidth / 5) * 3,
+                            top: (itemHeight / 5),
                             child: Text(
-                              product.name,
-                              style: TextStyle(color: Colors.white),
+                              product.name.toUpperCase(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                  shadows: [
+                                    Shadow(
+                                      blurRadius: 4.0,
+                                      color: Color.fromARGB(85, 0, 0, 0),
+                                    ),
+                                  ]),
                             ),
                           )
                         ],

@@ -7,6 +7,8 @@ import '../reducers/root_reducer.dart';
 import '../view_models/account_view_model.dart';
 import './footwear_category_screen.dart';
 
+import '../util/cdn_image.dart';
+
 class FootwearCategoriesScreen extends StatelessWidget {
   final String title;
 
@@ -76,7 +78,7 @@ class FootwearCategoriesScreen extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8),
+                        padding: EdgeInsets.symmetric(vertical: 16),
                         child: Column(
                           children: settings.footwearCategories.values.map(
                             (category) {
@@ -152,7 +154,7 @@ class _FootwearCategoryItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: 4,
-        horizontal: 16,
+        horizontal: 24,
       ),
       child: InkWell(
         onTap: () {
@@ -168,9 +170,7 @@ class _FootwearCategoryItem extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(
               fit: BoxFit.cover,
-              image: AssetImage(
-                'assets/images/jeans.jpg',
-              ),
+              image: cdnImage(category.image),
             ),
           ),
           height: 120,
@@ -181,16 +181,32 @@ class _FootwearCategoryItem extends StatelessWidget {
               Container(
                 color: Color.fromARGB(90, 0, 0, 0),
               ),
-              Text(
-                category.name.toUpperCase(),
-                style: TextStyle(
-                  fontFamily: 'RobotoCondensed',
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xffffffff),
-                  fontSize: 16,
-                  height: 1,
+              Positioned(
+                left: 24,
+                child: Text(
+                  category.name.toUpperCase(),
+                  style: TextStyle(
+                    fontFamily: 'RobotoCondensed',
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xffffffff),
+                    fontSize: 16,
+                    height: 1,
+                  ),
                 ),
-              )
+              ),
+              Positioned(
+                right: 24,
+                child: Text(
+                  category.productCount.toString(),
+                  style: TextStyle(
+                    fontFamily: 'RobotoCondensed',
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xffffffff),
+                    fontSize: 16,
+                    height: 1,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

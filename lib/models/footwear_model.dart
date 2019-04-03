@@ -11,6 +11,7 @@ class FootwearModel {
   final int id;
   final String name;
   final String description;
+  final String image;
   final int price;
   @JsonKey(name: 'brand_id')
   final int brandId;
@@ -33,6 +34,7 @@ class FootwearModel {
     @required this.id,
     @required this.name,
     @required this.description,
+    @required this.image,
     @required this.price,
     @required this.brandId,
     @required this.brandName,
