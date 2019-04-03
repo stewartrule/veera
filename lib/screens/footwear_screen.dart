@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
+import '../util/cdn_image.dart';
+
 import '../selectors/selectors.dart';
 import '../reducers/root_reducer.dart';
 import '../models/footwear_model.dart';
@@ -75,9 +77,7 @@ class FootwearItem extends StatelessWidget {
               image: DecorationImage(
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter,
-                image: AssetImage(
-                  'assets/images/12213240-1-multi.jpeg',
-                ),
+                image: cdnImage(product.image),
               ),
             ),
           ),

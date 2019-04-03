@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
+import '../util/cdn_image.dart';
+
 import '../actions/basket_actions.dart';
 
 import '../selectors/selectors.dart';
@@ -117,7 +119,13 @@ class FootwearDetailScreen extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        Text(product.price.toString()),
+                        Text(
+                          "\$${product.price / 100}",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Color(0xff777777),
+                          ),
+                        ),
                         Text(product.description),
                       ],
                     ),
@@ -216,9 +224,7 @@ class HorizontalList extends StatelessWidget {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: AssetImage(
-                                  'assets/images/pexels-photo-296881.jpg',
-                                ),
+                                image: cdnImage(product.image),
                               ),
                             ),
                           ),
@@ -339,7 +345,7 @@ class QuickAddButton extends StatelessWidget {
               vertical: 4,
               horizontal: 8,
             ),
-            color: inBasket ? Colors.deepOrange : Color(0xfffc8183),
+            color: inBasket ? Color(0xff037E7C) : Color(0xfffc8183),
             child: Text(
               inBasket ? 'REMOVE' : 'ADD TO CART',
               style: TextStyle(color: Colors.white),
