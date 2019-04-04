@@ -1,7 +1,7 @@
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter/material.dart';
 
-import '../util/cdn_image.dart';
+import '../widgets/cover_image.dart';
 
 import '../models/brand_model.dart';
 import '../models/footwear_model.dart';
@@ -161,15 +161,14 @@ class HorizontalList extends StatelessWidget {
                       ),
                       width: itemWidth,
                       height: itemHeight,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: cdnImage(product.image),
-                        ),
-                      ),
                       child: Stack(
                         alignment: Alignment.topRight,
                         children: <Widget>[
+                          CoverImage(
+                            image: product.image,
+                            width: itemWidth,
+                            height: itemHeight,
+                          ),
                           Positioned(
                             right: 16,
                             left: (itemWidth / 5) * 3,

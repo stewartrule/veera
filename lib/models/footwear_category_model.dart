@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
+import './image_model.dart';
 
 part 'footwear_category_model.g.dart';
 
@@ -7,7 +8,7 @@ part 'footwear_category_model.g.dart';
 class FootwearCategoryModel {
   final int id;
   final String name;
-  final String image;
+  final ImageModel image;
   @JsonKey(name: 'product_count')
   final int productCount;
 

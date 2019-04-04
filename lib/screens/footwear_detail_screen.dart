@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
-import '../util/cdn_image.dart';
+import '../widgets/cover_image.dart';
 
 import '../actions/basket_actions.dart';
 
@@ -218,15 +218,10 @@ class HorizontalList extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Container(
+                          CoverImage(
+                            image: product.image,
                             width: itemWidth,
                             height: itemHeight,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: cdnImage(product.image),
-                              ),
-                            ),
                           ),
                           SizedBox(
                             height: 12,

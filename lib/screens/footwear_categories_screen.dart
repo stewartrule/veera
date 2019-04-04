@@ -4,10 +4,9 @@ import '../models/footwear_category_model.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import '../reducers/root_reducer.dart';
-import '../view_models/account_view_model.dart';
 import './footwear_category_screen.dart';
 
-import '../util/cdn_image.dart';
+import '../widgets/cover_image.dart';
 
 class FootwearCategoriesScreen extends StatelessWidget {
   final String title;
@@ -167,17 +166,16 @@ class _FootwearCategoryItem extends StatelessWidget {
         },
         child: Container(
           width: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: cdnImage(category.image),
-            ),
-          ),
           height: 120,
           alignment: Alignment.center,
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
+              CoverImage(
+                width: double.infinity,
+                height: 120,
+                image: category.image,
+              ),
               Container(
                 color: Color.fromARGB(90, 0, 0, 0),
               ),

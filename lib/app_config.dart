@@ -5,10 +5,12 @@ import './util/http_client.dart';
 class AppConfig extends InheritedWidget {
   final HttpClient client;
   final String title;
+  final String cdnUrl;
 
   AppConfig({
-    @required this.title,
     @required this.client,
+    @required this.title,
+    @required this.cdnUrl,
     @required Widget child,
   }) : super(child: child);
 
