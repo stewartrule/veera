@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart'
 import 'package:flutter/foundation.dart' show required;
 
 import './footwear_variant_model.dart';
+import './image_model.dart';
 
 part 'footwear_model.g.dart';
 
@@ -11,7 +12,7 @@ class FootwearModel {
   final int id;
   final String name;
   final String description;
-  final String image;
+  final ImageModel image;
   final int price;
   @JsonKey(name: 'brand_id')
   final int brandId;

@@ -23,7 +23,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/12213240-1-multi.jpeg
-    - assets/images/jeans.jpg
+    - assets/images/1x1.png
     - assets/images/pexels-photo-296881.jpg
 
   fonts:

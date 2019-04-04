@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
-import '../util/cdn_image.dart';
+import '../widgets/cover_image.dart';
 
 import '../selectors/selectors.dart';
 import '../reducers/root_reducer.dart';
@@ -70,16 +70,10 @@ class FootwearItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          CoverImage(
             width: double.infinity,
             height: 200,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
-                image: cdnImage(product.image),
-              ),
-            ),
+            image: product.image,
           ),
           SizedBox(height: 8),
           Text(

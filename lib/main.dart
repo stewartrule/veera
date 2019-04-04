@@ -21,6 +21,7 @@ void main() {
 
   AppConfig app = AppConfig(
     client: client,
+    cdnUrl: baseUrl,
     title: 'Dev',
     child: App(store: store),
   );
