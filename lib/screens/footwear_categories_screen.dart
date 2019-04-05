@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import '../models/settings_model.dart';
-import '../models/footwear_category_model.dart';
+
 import 'package:flutter_redux/flutter_redux.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../reducers/root_reducer.dart';
 import './footwear_category_screen.dart';
+import '../models/settings_model.dart';
+import '../models/footwear_category_model.dart';
 
 import '../widgets/cover_image.dart';
 
@@ -46,28 +49,25 @@ class FootwearCategoriesScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        height: 200,
-                        alignment: Alignment.center,
+                        height: 280,
                         child: Stack(
-                          alignment: Alignment.center,
                           children: <Widget>[
                             Container(
                               color: Color.fromARGB(90, 0, 0, 0),
                             ),
                             Positioned(
-                              left: (size.width / 3) * 2,
-                              top: 0,
-                              bottom: 0,
+                              left: (size.width / 2),
+                              bottom: 24,
                               right: 16,
                               child: Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'PLAID FLANEL BODY VEST',
+                                  'MAN COLLECTION',
                                   style: TextStyle(
                                     fontFamily: 'RobotoCondensed',
                                     fontWeight: FontWeight.w600,
                                     color: Color(0xffffffff),
-                                    fontSize: 24,
+                                    fontSize: 32,
                                     height: 1,
                                   ),
                                 ),
@@ -118,7 +118,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
         color: Color(0xfffc8183),
       ),
       backgroundColor: Colors.white,
-      leading: Icon(Icons.menu),
+      leading: Icon(FontAwesomeIcons.bars),
       title: Text(
         title,
         style: TextStyle(
@@ -129,12 +129,12 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: <Widget>[
         Icon(
-          Icons.search,
+          FontAwesomeIcons.search,
           color: Color(0xffaaaaaa),
         ),
         SizedBox(width: 8),
         Icon(
-          Icons.shopping_cart,
+          FontAwesomeIcons.shoppingBag,
           color: Color(0xffaaaaaa),
         ),
         SizedBox(width: 16),

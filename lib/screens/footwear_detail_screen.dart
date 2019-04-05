@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../widgets/cover_image.dart';
 
@@ -72,15 +73,19 @@ class _ViewModel {
 }
 
 class FootwearDetailScreen extends StatelessWidget {
-  FootwearDetailScreen({Key key, this.product}) : super(key: key);
-
   final FootwearModel product;
+
+  FootwearDetailScreen({
+    Key key,
+    @required this.product,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        title: Text(product.name),
         elevation: 0,
         iconTheme: IconThemeData(
           color: Color(0xfffc8183),
@@ -90,11 +95,11 @@ class FootwearDetailScreen extends StatelessWidget {
           onTap: () {
             Navigator.pop(context);
           },
-          child: Icon(Icons.close),
+          child: Icon(FontAwesomeIcons.arrowLeft),
         ),
         actions: <Widget>[
           Icon(
-            Icons.shopping_cart,
+            FontAwesomeIcons.shoppingBag,
             color: Color(0xffaaaaaa),
           ),
           SizedBox(width: 16),
@@ -109,8 +114,20 @@ class FootwearDetailScreen extends StatelessWidget {
           _ViewModel vm,
         ) {
           return Container(
+            color: Colors.white,
             child: CustomScrollView(
               slivers: <Widget>[
+                SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      CoverImage(
+                        image: product.image,
+                        width: double.infinity,
+                        height: 320,
+                      ),
+                    ],
+                  ),
+                ),
                 SliverPadding(
                   padding: EdgeInsets.all(24),
                   sliver: SliverList(
@@ -217,7 +234,10 @@ class ColorCheckbox extends StatelessWidget {
               item.variant.colorId == color.id &&
               item.variant.footwearId == product.id,
         )
-            ? Icon(Icons.check)
+            ? Icon(
+                Icons.check,
+                color: Colors.white,
+              )
             : null,
       ),
     );

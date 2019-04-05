@@ -32,56 +32,118 @@ class FootwearCategoryScreen extends StatelessWidget {
           return CategoryViewModel(brands: brands, footwear: footwear);
         },
         builder: (BuildContext context, CategoryViewModel vm) {
-          return DefaultTabController(
-            length: vm.brands.length,
-            child: Scaffold(
-              appBar: AppBar(
-                elevation: 0,
-                iconTheme: IconThemeData(color: Colors.red),
-                backgroundColor: Colors.white,
-                bottom: TabBar(
-                  indicatorColor: Colors.white,
-                  indicatorWeight: 1,
-                  isScrollable: true,
-                  labelStyle: TextStyle(color: Colors.grey),
-                  tabs: vm.brands
-                      .map(
-                        (brand) => Tab(
-                              child: Text(
-                                brand.name.toUpperCase(),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'RobotoCondensed',
+          return CategoryTabs(vm: vm, category: category);
+        },
+      ),
+    );
+  }
+}
+
+class CategoryTabs extends StatefulWidget {
+  final FootwearCategoryModel category;
+  final CategoryViewModel vm;
+
+  CategoryTabs({Key key, this.category, this.vm}) : super(key: key);
+
+  CategoryTabsState createState() => CategoryTabsState();
+}
+
+class CategoryTabsState extends State<CategoryTabs>
+    with SingleTickerProviderStateMixin {
+  TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    tabController = TabController(
+      vsync: this,
+      length: widget.vm.brands.length,
+    );
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var vm = widget.vm;
+    var category = widget.category;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          category.name.toUpperCase(),
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.red),
+        backgroundColor: Colors.white,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+                children: vm.brands
+                    .asMap()
+                    .map(
+                      (i, brand) => MapEntry(
+                            i,
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  tabController.animateTo(i);
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      width: 1,
+                                      color: Color(0xffeeeeee),
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  brand.name.toUpperCase(),
+                                  style: TextStyle(
+                                    color: tabController.index == i
+                                        ? Colors.black
+                                        : Color(0xffaaaaaa),
+                                    fontFamily: 'RobotoCondensed',
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ),
                             ),
-                      )
-                      .toList(),
-                ),
-                title: Text(
-                  category.name,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              body: TabBarView(
-                children: vm.brands
-                    .map(
-                      (brand) => Tab(
-                            child: CategoryView(
-                              footwear: vm.footwear
-                                  .where((model) => model.brandId == brand.id)
-                                  .toList(),
-                            ),
                           ),
                     )
-                    .toList(),
-              ),
-            ),
-          );
-        },
+                    .values
+                    .toList()),
+          ),
+        ),
+      ),
+      body: TabBarView(
+        controller: tabController,
+        children: vm.brands
+            .map(
+              (brand) => Tab(
+                    child: CategoryView(
+                      footwear: vm.footwear
+                          .where((model) => model.brandId == brand.id)
+                          .toList(),
+                    ),
+                  ),
+            )
+            .toList(),
       ),
     );
   }
@@ -154,7 +216,6 @@ class HorizontalList extends StatelessWidget {
               (index, product) => MapEntry(
                     index,
                     Container(
-                      // alignment: Alignment.center,
                       margin: EdgeInsets.only(
                         left: index == 0 ? 24 : spacing,
                         right: index == footwear.length - 1 ? 24 : 0,
@@ -171,8 +232,8 @@ class HorizontalList extends StatelessWidget {
                           ),
                           Positioned(
                             right: 16,
-                            left: (itemWidth / 5) * 3,
-                            top: (itemHeight / 5),
+                            left: (itemWidth / 2),
+                            bottom: 24,
                             child: Text(
                               product.name.toUpperCase(),
                               style: TextStyle(

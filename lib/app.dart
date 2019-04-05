@@ -37,7 +37,7 @@ class App extends StatelessWidget {
         initialRoute: Routes.FootwearCategories,
         routes: {
           Routes.FootwearCategories: (BuildContext context) =>
-              FootwearCategoriesScreen(title: 'Footwear Categories'),
+              FootwearCategoriesScreen(title: 'FOOTWEAR'),
           Routes.Account: (BuildContext context) =>
               AccountScreen(title: 'Account'),
           Routes.Footwear: (BuildContext context) =>
