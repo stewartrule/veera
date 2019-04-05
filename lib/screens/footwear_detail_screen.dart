@@ -36,6 +36,10 @@ class _ViewModel {
     store.dispatch(BasketAddFootwearAction(amount: 1, variant: variant));
   }
 
+  updateFootwear(FootwearVariantModel variant) {
+    store.dispatch(BasketUpdateFootwearAction(amount: 1, variant: variant));
+  }
+
   static _ViewModel fromStore(Store<RootState> store, FootwearModel product) {
     var variants = getFootwearVariantsByFootwearId(
       store.state,
@@ -139,11 +143,10 @@ class FootwearDetailScreen extends StatelessWidget {
                         child: Row(
                           children: vm.colors
                               .map(
-                                (color) => Container(
-                                      margin: EdgeInsets.only(right: 8),
-                                      color: color.getColor(),
-                                      width: 40,
-                                      height: 40,
+                                (color) => ColorCheckbox(
+                                      product: product,
+                                      color: color,
+                                      vm: vm,
                                     ),
                               )
                               .toList(),
@@ -167,7 +170,9 @@ class FootwearDetailScreen extends StatelessWidget {
                         ),
                       ),
                       HorizontalList(
-                        footwear: vm.footwear,
+                        footwear: vm.footwear
+                            .where((prod) => prod.id != product.id)
+                            .toList(),
                       ),
                     ],
                   ),
@@ -176,6 +181,44 @@ class FootwearDetailScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class ColorCheckbox extends StatelessWidget {
+  const ColorCheckbox({
+    Key key,
+    @required this.color,
+    @required this.product,
+    @required this.vm,
+  }) : super(key: key);
+
+  final FootwearModel product;
+  final HslModel color;
+  final _ViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        var variant = product.variants.values
+            .firstWhere((variant) => variant.colorId == color.id);
+
+        vm.updateFootwear(variant);
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: 8),
+        color: color.getColor(),
+        width: 40,
+        height: 40,
+        child: vm.basket.items.any(
+          (item) =>
+              item.variant.colorId == color.id &&
+              item.variant.footwearId == product.id,
+        )
+            ? Icon(Icons.check)
+            : null,
       ),
     );
   }
@@ -218,10 +261,21 @@ class HorizontalList extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          CoverImage(
-                            image: product.image,
-                            width: itemWidth,
-                            height: itemHeight,
+                          InkWell(
+                            child: CoverImage(
+                              image: product.image,
+                              width: itemWidth,
+                              height: itemHeight,
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      FootwearDetailScreen(product: product),
+                                ),
+                              );
+                            },
                           ),
                           SizedBox(
                             height: 12,

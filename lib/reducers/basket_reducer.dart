@@ -38,6 +38,15 @@ BasketModel _removeItemReducer(
 ) =>
     basket.removeItem(action.item);
 
+BasketModel _updateFootwearReducer(
+  BasketModel basket,
+  BasketUpdateFootwearAction action,
+) =>
+    basket.updateFootwear(
+      variant: action.variant,
+      amount: 1,
+    );
+
 Reducer<BasketModel> basketReducer = combineReducers([
   TypedReducer<BasketModel, BasketAddFootwearAction>(
     _addFootwearVariantReducer,
@@ -53,5 +62,8 @@ Reducer<BasketModel> basketReducer = combineReducers([
   ),
   TypedReducer<BasketModel, BasketRemoveItemAction>(
     _removeItemReducer,
+  ),
+  TypedReducer<BasketModel, BasketUpdateFootwearAction>(
+    _updateFootwearReducer,
   ),
 ]);

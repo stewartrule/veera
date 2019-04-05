@@ -63,11 +63,10 @@ class BasketModel {
     return copyWith(
       items: items
           .map(
-            (BasketItemModel basketItem) => basketItem.variant.id == variant.id
-                ? basketItem.copyWith(
-                    amount: amount,
-                  )
-                : basketItem,
+            (BasketItemModel basketItem) =>
+                basketItem.variant.footwearId == variant.footwearId
+                    ? basketItem.copyWith(amount: amount, variant: variant)
+                    : basketItem,
           )
           .toList(),
     );
