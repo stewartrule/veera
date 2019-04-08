@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../widgets/cart_button.dart';
 import '../widgets/cover_image.dart';
 
 import '../actions/basket_actions.dart';
@@ -11,6 +11,7 @@ import '../selectors/selectors.dart';
 import '../reducers/root_reducer.dart';
 
 import '../models/basket_model.dart';
+import '../models/basket_item_model.dart';
 import '../models/footwear_model.dart';
 import '../models/footwear_variant_model.dart';
 import '../models/footwear_size_model.dart';
@@ -83,28 +84,6 @@ class FootwearDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(product.name),
-        elevation: 0,
-        iconTheme: IconThemeData(
-          color: Color(0xfffc8183),
-        ),
-        backgroundColor: Colors.white,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(FontAwesomeIcons.arrowLeft),
-        ),
-        actions: <Widget>[
-          Icon(
-            FontAwesomeIcons.shoppingBag,
-            color: Color(0xffaaaaaa),
-          ),
-          SizedBox(width: 16),
-        ],
-      ),
       body: StoreConnector<RootState, _ViewModel>(
         converter: (Store<RootState> store) {
           return _ViewModel.fromStore(store, product);
@@ -117,16 +96,53 @@ class FootwearDetailScreen extends StatelessWidget {
             color: Colors.white,
             child: CustomScrollView(
               slivers: <Widget>[
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      CoverImage(
-                        image: product.image,
-                        width: double.infinity,
-                        height: 320,
-                      ),
-                    ],
+                SliverAppBar(
+                  snap: false,
+                  forceElevated: false,
+                  elevation: 1,
+                  floating: true,
+                  expandedHeight: 400,
+                  backgroundColor: product.image.getColor(),
+                  leading: InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.arrow_back,
+                    ),
                   ),
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Stack(
+                      fit: StackFit.expand,
+                      children: <Widget>[
+                        CoverImage(
+                          image: product.image,
+                          width: double.infinity,
+                          height: 400,
+                        ),
+                        Positioned(
+                          bottom: 8,
+                          right: 16,
+                          child: Column(
+                            children: vm.colors
+                                .map(
+                                  (color) => ColorCheckbox(
+                                        margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
+                                        product: product,
+                                        color: color,
+                                        vm: vm,
+                                      ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    CartButton(color: Colors.white),
+                    SizedBox(width: 16),
+                  ],
                 ),
                 SliverPadding(
                   padding: EdgeInsets.all(24),
@@ -140,11 +156,25 @@ class FootwearDetailScreen extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        Text(
-                          "\$${product.price / 100}",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Color(0xff777777),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                "\$${product.price / 100}",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: Color(0xff777777),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 16,
+                              ),
+                              QuickAddButton(
+                                footwear: product,
+                              ),
+                            ],
                           ),
                         ),
                         Text(product.description),
@@ -167,6 +197,66 @@ class FootwearDetailScreen extends StatelessWidget {
                                     ),
                               )
                               .toList(),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(24, 16, 0, 0),
+                        child: Row(
+                          children: []
+                            ..add(
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 4, 4, 4),
+                                child: Text(
+                                  'SIZE',
+                                ),
+                              ),
+                            )
+                            ..addAll(
+                              vm.sizes.map(
+                                (size) => GestureDetector(
+                                      onTap: () {
+                                        var item = vm.basket.items.firstWhere(
+                                          (item) =>
+                                              item.variant.footwearId ==
+                                              product.id,
+                                          orElse: null,
+                                        );
+
+                                        var variant =
+                                            product.variants.values.firstWhere(
+                                          (variant) =>
+                                              variant.sizeId == size.id &&
+                                              (item is BasketItemModel
+                                                  ? item.variant.colorId ==
+                                                      variant.colorId
+                                                  : true),
+                                        );
+
+                                        vm.updateFootwear(variant);
+                                      },
+                                      child: Container(
+                                        padding:
+                                            EdgeInsets.fromLTRB(4, 4, 4, 4),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            width: 1,
+                                            color: vm.basket.items.any(
+                                              (item) =>
+                                                  item.variant.sizeId ==
+                                                      size.id &&
+                                                  item.variant.footwearId ==
+                                                      product.id,
+                                            )
+                                                ? Colors.grey
+                                                : Colors.white,
+                                          ),
+                                        ),
+                                        child: Text(size.eu.toString()),
+                                      ),
+                                    ),
+                              ),
+                            )
+                            ..toList(),
                         ),
                       )
                     ],
@@ -206,11 +296,13 @@ class FootwearDetailScreen extends StatelessWidget {
 class ColorCheckbox extends StatelessWidget {
   const ColorCheckbox({
     Key key,
+    this.margin = const EdgeInsets.only(right: 8),
     @required this.color,
     @required this.product,
     @required this.vm,
   }) : super(key: key);
 
+  final EdgeInsets margin;
   final FootwearModel product;
   final HslModel color;
   final _ViewModel vm;
@@ -219,13 +311,23 @@ class ColorCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        var variant = product.variants.values
-            .firstWhere((variant) => variant.colorId == color.id);
+        var item = vm.basket.items.firstWhere(
+          (item) => item.variant.footwearId == product.id,
+          orElse: null,
+        );
+
+        var variant = product.variants.values.firstWhere(
+          (variant) =>
+              variant.colorId == color.id &&
+              (item is BasketItemModel
+                  ? item.variant.sizeId == variant.sizeId
+                  : true),
+        );
 
         vm.updateFootwear(variant);
       },
       child: Container(
-        margin: EdgeInsets.only(right: 8),
+        margin: margin,
         color: color.getColor(),
         width: 40,
         height: 40,
@@ -390,6 +492,41 @@ class QuickAddButton extends StatelessWidget {
     this.footwear,
   }) : super(key: key);
 
+  void showBottomCartSheet(BuildContext context, int count) {
+    TextStyle style = TextStyle(color: Colors.white);
+
+    showBottomSheet(
+      context: context,
+      builder: (context) {
+        return new Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(16),
+          color: Color(0xff333333),
+          child: new GestureDetector(
+            onVerticalDragDown: (details) {
+              // todo: find better way to close sheet
+              // in combination with closing the page
+              Navigator.pop(context);
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'The item is added to the cart'.toUpperCase(),
+                  style: style,
+                ),
+                Text(
+                  'View all ($count)'.toUpperCase(),
+                  style: style,
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<RootState, _QuickAddButtonViewModel>(
@@ -407,7 +544,13 @@ class QuickAddButton extends StatelessWidget {
 
         return InkWell(
           onTap: () {
-            inBasket ? vm.remove() : vm.add();
+            if (inBasket) {
+              vm.remove();
+            } else {
+              vm.add();
+
+              showBottomCartSheet(context, vm.basket.items.length);
+            }
           },
           child: Container(
             padding: EdgeInsets.symmetric(
