@@ -1,6 +1,7 @@
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/cart_button.dart';
 import '../widgets/cover_image.dart';
 
 import '../models/brand_model.dart';
@@ -10,10 +11,10 @@ import '../reducers/root_reducer.dart';
 import './footwear_screen.dart' show FootwearItem;
 
 class CategoryViewModel {
-  final List<BrandModel> brands;
+  final List<FootwearCategoryModel> categories;
   final List<FootwearModel> footwear;
 
-  CategoryViewModel({this.brands, this.footwear});
+  CategoryViewModel({this.categories, this.footwear});
 }
 
 class FootwearCategoryScreen extends StatelessWidget {
@@ -26,10 +27,12 @@ class FootwearCategoryScreen extends StatelessWidget {
     return Scaffold(
       body: StoreConnector<RootState, CategoryViewModel>(
         converter: (store) {
-          List<BrandModel> brands =
-              store.state.settings.footwearBrands.values.toList();
+          List<FootwearCategoryModel> categories =
+              store.state.settings.footwearCategories.values.toList();
+
           List<FootwearModel> footwear = store.state.footwear.values.toList();
-          return CategoryViewModel(brands: brands, footwear: footwear);
+
+          return CategoryViewModel(categories: categories, footwear: footwear);
         },
         builder: (BuildContext context, CategoryViewModel vm) {
           return CategoryTabs(vm: vm, category: category);
@@ -56,10 +59,21 @@ class CategoryTabsState extends State<CategoryTabs>
   void initState() {
     super.initState();
 
+    int index = widget.vm.categories.indexWhere(
+      (category) => category.id == widget.category.id,
+    );
+
     tabController = TabController(
       vsync: this,
-      length: widget.vm.brands.length,
+      length: widget.vm.categories.length,
+      initialIndex: index,
     );
+
+    tabController.addListener(() {
+      setState(() {
+        // fixme
+      });
+    });
   }
 
   @override
@@ -72,17 +86,21 @@ class CategoryTabsState extends State<CategoryTabs>
   @override
   Widget build(BuildContext context) {
     var vm = widget.vm;
-    var category = widget.category;
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
-          category.name.toUpperCase(),
+          'CATEGORIES',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w600,
           ),
         ),
+        actions: <Widget>[
+          CartButton(),
+          SizedBox(width: 16),
+        ],
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.red),
         backgroundColor: Colors.white,
@@ -91,54 +109,60 @@ class CategoryTabsState extends State<CategoryTabs>
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-                children: vm.brands
-                    .asMap()
-                    .map(
-                      (i, brand) => MapEntry(
-                            i,
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  tabController.animateTo(i);
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                      width: 1,
-                                      color: Color(0xffeeeeee),
-                                    ),
+              children: vm.categories
+                  .asMap()
+                  .map(
+                    (i, category) => MapEntry(
+                          i,
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                tabController.animateTo(i);
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(
+                                i == 0 ? 24 : 16,
+                                16,
+                                i == vm.categories.length - 1 ? 24 : 16,
+                                16,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    width: 1,
+                                    color: Color(0xffeeeeee),
                                   ),
                                 ),
-                                child: Text(
-                                  brand.name.toUpperCase(),
-                                  style: TextStyle(
-                                    color: tabController.index == i
-                                        ? Colors.black
-                                        : Color(0xffaaaaaa),
-                                    fontFamily: 'RobotoCondensed',
-                                    fontSize: 16,
-                                  ),
+                              ),
+                              child: Text(
+                                category.name.toUpperCase(),
+                                style: TextStyle(
+                                  color: tabController.index == i
+                                      ? Colors.black
+                                      : Color(0xffaaaaaa),
+                                  fontFamily: 'RobotoCondensed',
+                                  fontSize: 16,
                                 ),
                               ),
                             ),
                           ),
-                    )
-                    .values
-                    .toList()),
+                        ),
+                  )
+                  .values
+                  .toList(),
+            ),
           ),
         ),
       ),
       body: TabBarView(
         controller: tabController,
-        children: vm.brands
+        children: vm.categories
             .map(
-              (brand) => Tab(
+              (category) => Tab(
                     child: CategoryView(
                       footwear: vm.footwear
-                          .where((model) => model.brandId == brand.id)
+                          .where((model) => model.categoryId == category.id)
                           .toList(),
                     ),
                   ),
@@ -157,6 +181,7 @@ class CategoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
       child: CustomScrollView(
         slivers: <Widget>[
           SliverPadding(
@@ -164,7 +189,9 @@ class CategoryView extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  HorizontalList(footwear: footwear),
+                  HorizontalList(
+                    footwear: footwear.sublist(0, 4).toList(),
+                  ),
                 ],
               ),
             ),
@@ -178,7 +205,8 @@ class CategoryView extends StatelessWidget {
                 crossAxisSpacing: 16,
               ),
               delegate: SliverChildListDelegate(
-                footwear.reversed
+                footwear
+                    .sublist(4)
                     .map((product) => FootwearItem(product: product))
                     .toList(),
               ),
