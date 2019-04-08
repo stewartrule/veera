@@ -32,6 +32,11 @@ class FootwearCategoriesScreen extends StatelessWidget {
             ) {
               final size = MediaQuery.of(context).size;
 
+              var values = settings.footwearCategories.values.toList();
+
+              var category =
+                  values.length > 0 ? (values..shuffle()).first : null;
+
               return SingleChildScrollView(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
@@ -41,20 +46,18 @@ class FootwearCategoriesScreen extends StatelessWidget {
                     children: <Widget>[
                       Container(
                         width: double.infinity,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage(
-                              'assets/images/pexels-photo-296881.jpg',
-                            ),
-                          ),
-                        ),
-                        height: 280,
                         child: Stack(
                           children: <Widget>[
                             Container(
                               color: Color.fromARGB(90, 0, 0, 0),
                             ),
+                            category is FootwearCategoryModel
+                                ? CoverImage(
+                                    width: double.infinity,
+                                    height: 280,
+                                    image: category.image,
+                                  )
+                                : null,
                             Positioned(
                               left: (size.width / 2),
                               bottom: 24,
@@ -69,11 +72,17 @@ class FootwearCategoriesScreen extends StatelessWidget {
                                     color: Color(0xffffffff),
                                     fontSize: 32,
                                     height: 1,
+                                    shadows: [
+                                      Shadow(
+                                        color: Color.fromARGB(128, 0, 0, 0),
+                                        blurRadius: 6,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             )
-                          ],
+                          ].where((x) => x != null).toList(),
                         ),
                       ),
                       Padding(
@@ -118,7 +127,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
         color: Color(0xfffc8183),
       ),
       backgroundColor: Colors.white,
-      leading: Icon(FontAwesomeIcons.bars),
+      leading: Icon(Icons.menu),
       title: Text(
         title,
         style: TextStyle(
