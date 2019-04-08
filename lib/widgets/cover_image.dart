@@ -34,19 +34,6 @@ class CoverImage extends StatelessWidget {
             fit: BoxFit.cover,
             image: NetworkImage("${config.cdnUrl}/images/${image.src}"),
           ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Color.fromARGB(128, 0, 0, 0),
-                  Color.fromARGB(0, 0, 0, 0)
-                ],
-                stops: [0, 0.66],
-              ),
-            ),
-          )
         ],
       ),
     );
