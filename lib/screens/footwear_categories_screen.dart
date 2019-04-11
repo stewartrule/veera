@@ -37,71 +37,96 @@ class FootwearCategoriesScreen extends StatelessWidget {
               var category =
                   values.length > 0 ? (values..shuffle()).first : null;
 
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: boxConstraints.maxHeight,
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        width: double.infinity,
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                              color: Color.fromARGB(90, 0, 0, 0),
-                            ),
-                            category is FootwearCategoryModel
-                                ? CoverImage(
-                                    width: double.infinity,
-                                    height: 280,
-                                    image: category.image,
-                                  )
-                                : null,
-                            Positioned(
-                              left: (size.width / 2),
-                              bottom: 24,
-                              right: 16,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'MAN COLLECTION',
-                                  style: TextStyle(
-                                    fontFamily: 'RobotoCondensed',
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xffffffff),
-                                    fontSize: 32,
-                                    height: 1,
-                                    shadows: [
-                                      Shadow(
-                                        color: Color.fromARGB(128, 0, 0, 0),
-                                        blurRadius: 6,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          ].where((x) => x != null).toList(),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Column(
-                          children: settings.footwearCategories.values.map(
-                            (category) {
-                              return _FootwearCategoryItem(category: category);
-                            },
-                          ).toList(),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+              return Dashboard(
+                category: category,
+                size: size,
+                boxConstraints: boxConstraints,
+                settings: settings,
               );
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class Dashboard extends StatelessWidget {
+  const Dashboard({
+    Key key,
+    this.category,
+    @required this.size,
+    @required this.boxConstraints,
+    @required this.settings,
+  }) : super(key: key);
+
+  final FootwearCategoryModel category;
+  final Size size;
+  final BoxConstraints boxConstraints;
+  final SettingsModel settings;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: boxConstraints.maxHeight,
+        ),
+        child: Column(
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    color: Color.fromARGB(90, 0, 0, 0),
+                  ),
+                  category is FootwearCategoryModel
+                      ? CoverImage(
+                          width: double.infinity,
+                          height: 280,
+                          image: category.image,
+                        )
+                      : null,
+                  Positioned(
+                    left: (size.width / 2),
+                    bottom: 24,
+                    right: 16,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'MAN COLLECTION',
+                        style: TextStyle(
+                          fontFamily: 'RobotoCondensed',
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xffffffff),
+                          fontSize: 32,
+                          height: 1,
+                          shadows: [
+                            Shadow(
+                              color: Color.fromARGB(128, 0, 0, 0),
+                              blurRadius: 6,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ].where((x) => x != null).toList(),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                children: settings.footwearCategories.values.map(
+                  (category) {
+                    return _FootwearCategoryItem(category: category);
+                  },
+                ).toList(),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
