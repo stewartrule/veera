@@ -102,6 +102,14 @@ class CategoryTabsState extends State<CategoryTabs>
           SizedBox(width: 16),
         ],
         elevation: 0,
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.arrow_back,
+          ),
+        ),
         iconTheme: IconThemeData(color: Colors.red),
         backgroundColor: Colors.white,
         bottom: PreferredSize(

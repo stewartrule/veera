@@ -120,22 +120,6 @@ class FootwearDetailScreen extends StatelessWidget {
                           width: double.infinity,
                           height: 400,
                         ),
-                        Positioned(
-                          bottom: 8,
-                          right: 16,
-                          child: Column(
-                            children: vm.colors
-                                .map(
-                                  (color) => ColorCheckbox(
-                                        margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
-                                        product: product,
-                                        color: color,
-                                        vm: vm,
-                                      ),
-                                )
-                                .toList(),
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -309,6 +293,8 @@ class ColorCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var canSelect = vm.basket.hasFootwearWithId(product.id);
+
     return InkWell(
       onTap: () {
         var item = vm.basket.items.firstWhere(
@@ -324,11 +310,16 @@ class ColorCheckbox extends StatelessWidget {
                   : true),
         );
 
-        vm.updateFootwear(variant);
+        if (variant is FootwearVariantModel) {
+          vm.updateFootwear(variant);
+        }
       },
       child: Container(
         margin: margin,
-        color: color.getColor(),
+        decoration: BoxDecoration(
+          border: Border.all(color: color.getColor(), width: 1),
+          color: canSelect ? color.getColor() : Color(0xffffff),
+        ),
         width: 40,
         height: 40,
         child: vm.basket.items.any(
@@ -390,7 +381,7 @@ class HorizontalList extends StatelessWidget {
                               height: itemHeight,
                             ),
                             onTap: () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
@@ -505,7 +496,7 @@ class QuickAddButton extends StatelessWidget {
           child: new GestureDetector(
             onVerticalDragDown: (details) {
               // todo: find better way to close sheet
-              // in combination with closing the page
+              // while also closing the page
               Navigator.pop(context);
             },
             child: Row(
