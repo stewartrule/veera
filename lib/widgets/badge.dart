@@ -6,7 +6,7 @@ class Badge extends StatelessWidget {
 
   Badge({
     this.count,
-    this.size = 16,
+    this.size = 24,
   });
 
   @override
@@ -14,18 +14,17 @@ class Badge extends StatelessWidget {
     return Container(
       width: size,
       height: size,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        gradient: LinearGradient(
-          colors: [
-            Colors.blue.shade400,
-            Colors.blue,
-          ],
-        ),
+        borderRadius: BorderRadius.circular(size / 2),
+        color: Color(0xfffc8183),
       ),
       child: Text(
         count.toString(),
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+        ),
         textAlign: TextAlign.center,
       ),
     );

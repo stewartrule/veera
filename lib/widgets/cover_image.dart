@@ -23,7 +23,7 @@ class CoverImage extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: image.getColor(),
+        color: image.getColor().withAlpha(128),
       ),
       child: Stack(
         children: <Widget>[

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../widgets/cart_button.dart';
 import '../widgets/cover_image.dart';
 
-import '../models/brand_model.dart';
 import '../models/footwear_model.dart';
 import '../models/footwear_category_model.dart';
 import '../reducers/root_reducer.dart';

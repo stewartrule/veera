@@ -152,7 +152,12 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
         color: Color(0xfffc8183),
       ),
       backgroundColor: Colors.white,
-      leading: Icon(Icons.menu),
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/account');
+        },
+        icon: Icon(Icons.menu),
+      ),
       title: Text(
         title,
         style: TextStyle(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../models/user_model.dart';
 import '../reducers/root_reducer.dart';
 import '../view_models/account_view_model.dart';
@@ -18,11 +20,19 @@ class AccountScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(title),
-        backgroundColor: Color(0xff222222),
-        actions: <Widget>[
-          Icon(Icons.search),
-        ],
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: Color(0xfffc8183),
+        ),
+        backgroundColor: Colors.white,
+        title: Text(
+          title,
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
+          textAlign: TextAlign.start,
+        ),
       ),
       body: StoreConnector<RootState, AccountViewModel>(
         converter: AccountViewModel.fromStore,
@@ -56,27 +66,48 @@ class AccountMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        UserListItem(user: user),
-        ListItem(icon: Icons.shopping_cart, label: 'Shopping Cart'),
-        ListItem(icon: Icons.favorite, label: 'Wishlist'),
-        ListItem(icon: Icons.assessment, label: 'Orders'),
-        SizedBox(height: 16),
-        ListItem(icon: Icons.notifications, label: 'Notifications'),
-        ListItem(icon: Icons.lock, label: 'Password'),
-        ListItem(icon: Icons.credit_card, label: 'Payment'),
-        ListItem(icon: Icons.shopping_cart, label: 'Delivery Address'),
-        ListItem(icon: Icons.help, label: 'Need help?'),
-        ListItem(icon: Icons.arrow_right, label: 'Log Out'),
-        SizedBox(height: 16),
-        ListItem(icon: Icons.notifications, label: 'Notifications'),
-        ListItem(icon: Icons.lock, label: 'Password'),
-        ListItem(icon: Icons.credit_card, label: 'Payment'),
-        ListItem(icon: Icons.shopping_cart, label: 'Delivery Address'),
-        ListItem(icon: Icons.help, label: 'Need help?'),
-        ListItem(icon: Icons.arrow_right, label: 'Log Out'),
-      ],
+    return Container(
+      padding: EdgeInsets.fromLTRB(24, 8, 24, 24),
+      color: Colors.white,
+      child: Column(
+        children: [
+          UserListItem(user: user),
+          SizedBox(
+            height: 16,
+          ),
+          ListItem(icon: Icons.shopping_cart, label: 'Shopping Cart'),
+          ListItem(icon: Icons.favorite, label: 'Wishlist'),
+          ListItem(icon: Icons.assessment, label: 'Orders'),
+          ListItem(icon: Icons.notifications, label: 'Notifications'),
+          ListItem(icon: Icons.lock, label: 'Password'),
+          ListItem(icon: Icons.credit_card, label: 'Payment'),
+          ListItem(icon: Icons.shopping_cart, label: 'Delivery Address'),
+          ListItem(icon: Icons.help, label: 'Need help?'),
+          ListItem(icon: Icons.arrow_right, label: 'Log Out'),
+          Container(
+            child: InkWell(
+              child: Container(
+                padding: EdgeInsets.all(16),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Color(0xffeeeeee),
+                    width: 1,
+                  ),
+                ),
+                child: Text(
+                  'LOGOUT',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              onTap: () {},
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -93,44 +124,35 @@ class ListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 4,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Color(0xffeeeeee),
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              width: 1,
+              color: Color(0xffeeeeee),
             ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Row(children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Icon(
-                    icon,
-                  ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(children: <Widget>[
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 16, 16, 16),
+                child: Icon(
+                  icon,
                 ),
-                Text(label)
-              ]),
-              Row(
-                children: <Widget>[
-                  Badge(
-                    count: 3,
-                    size: 16,
-                  ),
-                  Icon(
-                    Icons.chevron_right,
-                    color: Color(0xffaaaaaa),
-                  )
-                ],
+              ),
+              Text(
+                label,
+                style: TextStyle(fontSize: 16),
               )
-            ],
-          ),
+            ]),
+            Badge(
+              count: 3,
+              size: 24,
+            ),
+          ],
         ),
       ),
     );
@@ -145,38 +167,22 @@ class UserListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 4,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Color(0xffeeeeee),
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Avatar(
+            src: 'https://randomuser.me/api/portraits/women/68.jpg',
+            size: 136,
           ),
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: Row(
-              children: <Widget>[
-                Avatar(
-                  src: 'https://randomuser.me/api/portraits/women/68.jpg',
-                ),
-                Column(
-                  children: <Widget>[
-                    Text(
-                      "${user.firstname} ${user.lastname}",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text("${user.firstname} ${user.lastname}"),
-                  ],
-                ),
-              ],
-            ),
+          SizedBox(
+            height: 16,
           ),
-        ),
+          Text(
+            "${user.firstname} ${user.lastname}",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          // Text("${user.firstname} ${user.lastname}"),
+        ],
       ),
     );
   }

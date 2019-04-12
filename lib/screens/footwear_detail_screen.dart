@@ -102,7 +102,7 @@ class FootwearDetailScreen extends StatelessWidget {
                   elevation: 1,
                   floating: true,
                   expandedHeight: 400,
-                  backgroundColor: product.image.getColor(),
+                  backgroundColor: product.image.getColor().withAlpha(128),
                   leading: InkWell(
                     onTap: () {
                       Navigator.pop(context);
