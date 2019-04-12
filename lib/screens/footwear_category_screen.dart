@@ -1,6 +1,7 @@
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/cart_button.dart';
 import '../widgets/cover_image.dart';
 
 import '../models/brand_model.dart';
@@ -10,10 +11,10 @@ import '../reducers/root_reducer.dart';
 import './footwear_screen.dart' show FootwearItem;
 
 class CategoryViewModel {
-  final List<BrandModel> brands;
+  final List<FootwearCategoryModel> categories;
   final List<FootwearModel> footwear;
 
-  CategoryViewModel({this.brands, this.footwear});
+  CategoryViewModel({this.categories, this.footwear});
 }
 
 class FootwearCategoryScreen extends StatelessWidget {
@@ -26,62 +27,155 @@ class FootwearCategoryScreen extends StatelessWidget {
     return Scaffold(
       body: StoreConnector<RootState, CategoryViewModel>(
         converter: (store) {
-          List<BrandModel> brands =
-              store.state.settings.footwearBrands.values.toList();
+          List<FootwearCategoryModel> categories =
+              store.state.settings.footwearCategories.values.toList();
+
           List<FootwearModel> footwear = store.state.footwear.values.toList();
-          return CategoryViewModel(brands: brands, footwear: footwear);
+
+          return CategoryViewModel(categories: categories, footwear: footwear);
         },
         builder: (BuildContext context, CategoryViewModel vm) {
-          return DefaultTabController(
-            length: vm.brands.length,
-            child: Scaffold(
-              appBar: AppBar(
-                elevation: 0,
-                iconTheme: IconThemeData(color: Colors.red),
-                backgroundColor: Colors.white,
-                bottom: TabBar(
-                  indicatorColor: Colors.white,
-                  indicatorWeight: 1,
-                  isScrollable: true,
-                  labelStyle: TextStyle(color: Colors.grey),
-                  tabs: vm.brands
-                      .map(
-                        (brand) => Tab(
+          return CategoryTabs(vm: vm, category: category);
+        },
+      ),
+    );
+  }
+}
+
+class CategoryTabs extends StatefulWidget {
+  final FootwearCategoryModel category;
+  final CategoryViewModel vm;
+
+  CategoryTabs({Key key, this.category, this.vm}) : super(key: key);
+
+  CategoryTabsState createState() => CategoryTabsState();
+}
+
+class CategoryTabsState extends State<CategoryTabs>
+    with SingleTickerProviderStateMixin {
+  TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    int index = widget.vm.categories.indexWhere(
+      (category) => category.id == widget.category.id,
+    );
+
+    tabController = TabController(
+      vsync: this,
+      length: widget.vm.categories.length,
+      initialIndex: index,
+    );
+
+    tabController.addListener(() {
+      setState(() {
+        // fixme
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var vm = widget.vm;
+
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'CATEGORIES',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        actions: <Widget>[
+          CartButton(),
+          SizedBox(width: 16),
+        ],
+        elevation: 0,
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.arrow_back,
+          ),
+        ),
+        iconTheme: IconThemeData(color: Colors.red),
+        backgroundColor: Colors.white,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: vm.categories
+                  .asMap()
+                  .map(
+                    (i, category) => MapEntry(
+                          i,
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                tabController.animateTo(i);
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(
+                                i == 0 ? 24 : 16,
+                                16,
+                                i == vm.categories.length - 1 ? 24 : 16,
+                                16,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    width: 1,
+                                    color: Color(0xffeeeeee),
+                                  ),
+                                ),
+                              ),
                               child: Text(
-                                brand.name.toUpperCase(),
+                                category.name.toUpperCase(),
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color: tabController.index == i
+                                      ? Colors.black
+                                      : Color(0xffaaaaaa),
                                   fontFamily: 'RobotoCondensed',
+                                  fontSize: 16,
                                 ),
                               ),
                             ),
-                      )
-                      .toList(),
-                ),
-                title: Text(
-                  category.name,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              body: TabBarView(
-                children: vm.brands
-                    .map(
-                      (brand) => Tab(
-                            child: CategoryView(
-                              footwear: vm.footwear
-                                  .where((model) => model.brandId == brand.id)
-                                  .toList(),
-                            ),
                           ),
-                    )
-                    .toList(),
-              ),
+                        ),
+                  )
+                  .values
+                  .toList(),
             ),
-          );
-        },
+          ),
+        ),
+      ),
+      body: TabBarView(
+        controller: tabController,
+        children: vm.categories
+            .map(
+              (category) => Tab(
+                    child: CategoryView(
+                      footwear: vm.footwear
+                          .where((model) => model.categoryId == category.id)
+                          .toList(),
+                    ),
+                  ),
+            )
+            .toList(),
       ),
     );
   }
@@ -95,6 +189,7 @@ class CategoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
       child: CustomScrollView(
         slivers: <Widget>[
           SliverPadding(
@@ -102,7 +197,9 @@ class CategoryView extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  HorizontalList(footwear: footwear),
+                  HorizontalList(
+                    footwear: footwear.sublist(0, 4).toList(),
+                  ),
                 ],
               ),
             ),
@@ -116,7 +213,8 @@ class CategoryView extends StatelessWidget {
                 crossAxisSpacing: 16,
               ),
               delegate: SliverChildListDelegate(
-                footwear.reversed
+                footwear
+                    .sublist(4)
                     .map((product) => FootwearItem(product: product))
                     .toList(),
               ),
@@ -154,7 +252,6 @@ class HorizontalList extends StatelessWidget {
               (index, product) => MapEntry(
                     index,
                     Container(
-                      // alignment: Alignment.center,
                       margin: EdgeInsets.only(
                         left: index == 0 ? 24 : spacing,
                         right: index == footwear.length - 1 ? 24 : 0,
@@ -171,8 +268,8 @@ class HorizontalList extends StatelessWidget {
                           ),
                           Positioned(
                             right: 16,
-                            left: (itemWidth / 5) * 3,
-                            top: (itemHeight / 5),
+                            left: (itemWidth / 2),
+                            bottom: 24,
                             child: Text(
                               product.name.toUpperCase(),
                               style: TextStyle(

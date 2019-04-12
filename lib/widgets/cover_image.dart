@@ -33,7 +33,7 @@ class CoverImage extends StatelessWidget {
             placeholder: AssetImage('assets/images/1x1.png'),
             fit: BoxFit.cover,
             image: NetworkImage("${config.cdnUrl}/images/${image.src}"),
-          )
+          ),
         ],
       ),
     );

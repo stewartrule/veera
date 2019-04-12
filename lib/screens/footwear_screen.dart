@@ -72,7 +72,7 @@ class FootwearItem extends StatelessWidget {
         children: [
           CoverImage(
             width: double.infinity,
-            height: 200,
+            height: 240,
             image: product.image,
           ),
           SizedBox(height: 8),

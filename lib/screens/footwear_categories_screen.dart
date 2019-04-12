@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import '../models/settings_model.dart';
-import '../models/footwear_category_model.dart';
+
 import 'package:flutter_redux/flutter_redux.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../reducers/root_reducer.dart';
 import './footwear_category_screen.dart';
+import '../models/settings_model.dart';
+import '../models/footwear_category_model.dart';
 
 import '../widgets/cover_image.dart';
 
@@ -29,70 +32,101 @@ class FootwearCategoriesScreen extends StatelessWidget {
             ) {
               final size = MediaQuery.of(context).size;
 
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: boxConstraints.maxHeight,
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage(
-                              'assets/images/pexels-photo-296881.jpg',
-                            ),
-                          ),
-                        ),
-                        height: 200,
-                        alignment: Alignment.center,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: <Widget>[
-                            Container(
-                              color: Color.fromARGB(90, 0, 0, 0),
-                            ),
-                            Positioned(
-                              left: (size.width / 3) * 2,
-                              top: 0,
-                              bottom: 0,
-                              right: 16,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'PLAID FLANEL BODY VEST',
-                                  style: TextStyle(
-                                    fontFamily: 'RobotoCondensed',
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xffffffff),
-                                    fontSize: 24,
-                                    height: 1,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Column(
-                          children: settings.footwearCategories.values.map(
-                            (category) {
-                              return _FootwearCategoryItem(category: category);
-                            },
-                          ).toList(),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+              var values = settings.footwearCategories.values.toList();
+
+              var category =
+                  values.length > 0 ? (values..shuffle()).first : null;
+
+              return Dashboard(
+                category: category,
+                size: size,
+                boxConstraints: boxConstraints,
+                settings: settings,
               );
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class Dashboard extends StatelessWidget {
+  const Dashboard({
+    Key key,
+    this.category,
+    @required this.size,
+    @required this.boxConstraints,
+    @required this.settings,
+  }) : super(key: key);
+
+  final FootwearCategoryModel category;
+  final Size size;
+  final BoxConstraints boxConstraints;
+  final SettingsModel settings;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: boxConstraints.maxHeight,
+        ),
+        child: Column(
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    color: Color.fromARGB(90, 0, 0, 0),
+                  ),
+                  category is FootwearCategoryModel
+                      ? CoverImage(
+                          width: double.infinity,
+                          height: 280,
+                          image: category.image,
+                        )
+                      : null,
+                  Positioned(
+                    left: (size.width / 2),
+                    bottom: 24,
+                    right: 16,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'MAN COLLECTION',
+                        style: TextStyle(
+                          fontFamily: 'RobotoCondensed',
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xffffffff),
+                          fontSize: 32,
+                          height: 1,
+                          shadows: [
+                            Shadow(
+                              color: Color.fromARGB(128, 0, 0, 0),
+                              blurRadius: 6,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ].where((x) => x != null).toList(),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                children: settings.footwearCategories.values.map(
+                  (category) {
+                    return _FootwearCategoryItem(category: category);
+                  },
+                ).toList(),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -129,12 +163,12 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: <Widget>[
         Icon(
-          Icons.search,
+          FontAwesomeIcons.search,
           color: Color(0xffaaaaaa),
         ),
         SizedBox(width: 8),
         Icon(
-          Icons.shopping_cart,
+          FontAwesomeIcons.shoppingBag,
           color: Color(0xffaaaaaa),
         ),
         SizedBox(width: 16),
