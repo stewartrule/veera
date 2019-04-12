@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../models/user_model.dart';
 import '../reducers/root_reducer.dart';
@@ -25,6 +24,14 @@ class AccountScreen extends StatelessWidget {
           color: Color(0xfffc8183),
         ),
         backgroundColor: Colors.white,
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.arrow_back,
+          ),
+        ),
         title: Text(
           title,
           style: TextStyle(
@@ -172,7 +179,7 @@ class UserListItem extends StatelessWidget {
         children: <Widget>[
           Avatar(
             src: 'https://randomuser.me/api/portraits/women/68.jpg',
-            size: 136,
+            size: 160,
           ),
           SizedBox(
             height: 16,

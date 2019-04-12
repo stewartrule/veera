@@ -27,11 +27,16 @@ class CartButton extends StatelessWidget {
           alignment: Alignment.center,
           child: Stack(
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(right: 4),
-                child: Icon(
-                  FontAwesomeIcons.shoppingBag,
-                  color: color,
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, '/basket');
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(right: 4),
+                  child: Icon(
+                    FontAwesomeIcons.shoppingBag,
+                    color: color,
+                  ),
                 ),
               ),
               itemCount > 0

@@ -5,6 +5,7 @@ import 'package:redux/redux.dart';
 import './reducers/root_reducer.dart';
 
 import './screens/account_screen.dart';
+import './screens/basket_screen.dart';
 import './screens/footwear_screen.dart';
 import './screens/footwear_categories_screen.dart';
 
@@ -13,6 +14,7 @@ import './app_config.dart';
 class Routes {
   static const String Account = '/account';
   static const String Footwear = '/footwear';
+  static const String Basket = '/basket';
   static const String FootwearCategories = '/';
 }
 
@@ -38,6 +40,8 @@ class App extends StatelessWidget {
         routes: {
           Routes.FootwearCategories: (BuildContext context) =>
               FootwearCategoriesScreen(title: 'FOOTWEAR'),
+          Routes.Basket: (BuildContext context) =>
+              BasketScreen(title: 'BASKET'),
           Routes.Account: (BuildContext context) =>
               AccountScreen(title: 'MENU'),
           Routes.Footwear: (BuildContext context) =>

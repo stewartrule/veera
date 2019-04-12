@@ -4,74 +4,17 @@ import 'package:redux/redux.dart';
 
 import '../widgets/cart_button.dart';
 import '../widgets/cover_image.dart';
+import '../widgets/color_checkbox.dart';
+import '../widgets/size_select.dart';
 
 import '../actions/basket_actions.dart';
 
-import '../selectors/selectors.dart';
 import '../reducers/root_reducer.dart';
 
 import '../models/basket_model.dart';
-import '../models/basket_item_model.dart';
 import '../models/footwear_model.dart';
-import '../models/footwear_variant_model.dart';
-import '../models/footwear_size_model.dart';
-import '../models/hsl_model.dart';
 
-class _ViewModel {
-  final Store<RootState> store;
-  final BasketModel basket;
-  final List<ExpandedFootwearVariantModel> variants;
-  final List<FootwearModel> footwear;
-  final List<HslModel> colors;
-  final List<FootwearSizeModel> sizes;
-
-  _ViewModel({
-    this.store,
-    this.basket,
-    this.variants,
-    this.footwear,
-    this.colors,
-    this.sizes,
-  });
-
-  addFootwearVariant(FootwearVariantModel variant) {
-    store.dispatch(BasketAddFootwearAction(amount: 1, variant: variant));
-  }
-
-  updateFootwear(FootwearVariantModel variant) {
-    store.dispatch(BasketUpdateFootwearAction(amount: 1, variant: variant));
-  }
-
-  static _ViewModel fromStore(Store<RootState> store, FootwearModel product) {
-    var variants = getFootwearVariantsByFootwearId(
-      store.state,
-      product.id,
-    );
-
-    List<HslModel> colors = variants
-        .asMap()
-        .map((i, variant) => MapEntry(variant.color.id, variant.color))
-        .values
-        .toList();
-
-    List<FootwearSizeModel> sizes = variants
-        .asMap()
-        .map((i, variant) => MapEntry(variant.size.id, variant.size))
-        .values
-        .toList();
-
-    return _ViewModel(
-      basket: store.state.basket,
-      store: store,
-      colors: colors,
-      sizes: sizes,
-      variants: variants,
-      footwear: store.state.footwear.values
-          .where((model) => model.categoryId == product.categoryId)
-          .toList(),
-    );
-  }
-}
+import '../view_models/basket_item_view_model.dart';
 
 class FootwearDetailScreen extends StatelessWidget {
   final FootwearModel product;
@@ -84,13 +27,13 @@ class FootwearDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StoreConnector<RootState, _ViewModel>(
+      body: StoreConnector<RootState, BasketItemViewModel>(
         converter: (Store<RootState> store) {
-          return _ViewModel.fromStore(store, product);
+          return BasketItemViewModel.fromStore(store, product);
         },
         builder: (
           BuildContext context,
-          _ViewModel vm,
+          BasketItemViewModel vm,
         ) {
           return Container(
             color: Colors.white,
@@ -185,62 +128,9 @@ class FootwearDetailScreen extends StatelessWidget {
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(24, 16, 0, 0),
-                        child: Row(
-                          children: []
-                            ..add(
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(0, 4, 4, 4),
-                                child: Text(
-                                  'SIZE',
-                                ),
-                              ),
-                            )
-                            ..addAll(
-                              vm.sizes.map(
-                                (size) => GestureDetector(
-                                      onTap: () {
-                                        var item = vm.basket.items.firstWhere(
-                                          (item) =>
-                                              item.variant.footwearId ==
-                                              product.id,
-                                          orElse: null,
-                                        );
-
-                                        var variant =
-                                            product.variants.values.firstWhere(
-                                          (variant) =>
-                                              variant.sizeId == size.id &&
-                                              (item is BasketItemModel
-                                                  ? item.variant.colorId ==
-                                                      variant.colorId
-                                                  : true),
-                                        );
-
-                                        vm.updateFootwear(variant);
-                                      },
-                                      child: Container(
-                                        padding:
-                                            EdgeInsets.fromLTRB(4, 4, 4, 4),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            width: 1,
-                                            color: vm.basket.items.any(
-                                              (item) =>
-                                                  item.variant.sizeId ==
-                                                      size.id &&
-                                                  item.variant.footwearId ==
-                                                      product.id,
-                                            )
-                                                ? Colors.grey
-                                                : Colors.white,
-                                          ),
-                                        ),
-                                        child: Text(size.eu.toString()),
-                                      ),
-                                    ),
-                              ),
-                            )
-                            ..toList(),
+                        child: new SizeSelect(
+                          product: product,
+                          vm: vm,
                         ),
                       )
                     ],
@@ -272,66 +162,6 @@ class FootwearDetailScreen extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class ColorCheckbox extends StatelessWidget {
-  const ColorCheckbox({
-    Key key,
-    this.margin = const EdgeInsets.only(right: 8),
-    @required this.color,
-    @required this.product,
-    @required this.vm,
-  }) : super(key: key);
-
-  final EdgeInsets margin;
-  final FootwearModel product;
-  final HslModel color;
-  final _ViewModel vm;
-
-  @override
-  Widget build(BuildContext context) {
-    var canSelect = vm.basket.hasFootwearWithId(product.id);
-
-    return InkWell(
-      onTap: () {
-        var item = vm.basket.items.firstWhere(
-          (item) => item.variant.footwearId == product.id,
-          orElse: null,
-        );
-
-        var variant = product.variants.values.firstWhere(
-          (variant) =>
-              variant.colorId == color.id &&
-              (item is BasketItemModel
-                  ? item.variant.sizeId == variant.sizeId
-                  : true),
-        );
-
-        if (variant is FootwearVariantModel) {
-          vm.updateFootwear(variant);
-        }
-      },
-      child: Container(
-        margin: margin,
-        decoration: BoxDecoration(
-          border: Border.all(color: color.getColor(), width: 1),
-          color: canSelect ? color.getColor() : Color(0xffffff),
-        ),
-        width: 40,
-        height: 40,
-        child: vm.basket.items.any(
-          (item) =>
-              item.variant.colorId == color.id &&
-              item.variant.footwearId == product.id,
-        )
-            ? Icon(
-                Icons.check,
-                color: Colors.white,
-              )
-            : null,
       ),
     );
   }
