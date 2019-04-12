@@ -9,10 +9,17 @@ import '../widgets/color_checkbox.dart';
 import '../widgets/cover_image.dart';
 import '../widgets/size_select.dart';
 
-class BasketScreen extends StatelessWidget {
+class BasketScreen extends StatefulWidget {
   BasketScreen({Key key, this.title}) : super(key: key);
 
   final String title;
+
+  @override
+  _BasketScreenState createState() => _BasketScreenState();
+}
+
+class _BasketScreenState extends State<BasketScreen> {
+  List<int> selected = [];
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +40,7 @@ class BasketScreen extends StatelessWidget {
           ),
         ),
         title: Text(
-          title,
+          widget.title,
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w600,
@@ -63,23 +70,45 @@ class BasketScreen extends StatelessWidget {
                   padding: EdgeInsets.all(16),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate(
-                      vms
-                          .map(
-                            (vm) => Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 8),
-                                  child: BasketItem(
-                                    vm: vm,
-                                  ),
-                                ),
-                          )
-                          .toList(),
+                      vms.map(
+                        (vm) {
+                          int id = vm.product.id;
+
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: BasketItem(
+                              vm: vm,
+                              selected: selected.contains(id),
+                              onToggle: () {
+                                setState(() {
+                                  if (selected.contains(id)) {
+                                    selected.remove(id);
+                                  } else {
+                                    selected.add(id);
+                                  }
+                                });
+                              },
+                            ),
+                          );
+                        },
+                      ).toList(),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           );
         },
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.all(16),
+        child: RaisedButton(
+          onPressed: selected.length > 0 ? () {} : null,
+          color: Colors.blue,
+          elevation: 0,
+          textColor: Colors.white,
+          child: Text('Remove'),
+        ),
       ),
     );
   }
@@ -87,75 +116,111 @@ class BasketScreen extends StatelessWidget {
 
 class BasketItem extends StatelessWidget {
   final BasketItemViewModel vm;
+  final Function onToggle;
+  final bool selected;
 
   const BasketItem({
     Key key,
     this.vm,
+    this.onToggle,
+    this.selected,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Container(
-          width: 24,
-          height: 24,
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 1,
-              color: Color(0xffcccccc),
+        InkWell(
+          onTap: onToggle,
+          child: Container(
+            width: 24,
+            height: 24,
+            child: selected
+                ? Icon(
+                    Icons.check,
+                    color: Colors.white,
+                  )
+                : null,
+            decoration: BoxDecoration(
+              color: selected ? Color(0xfffc8183) : Color(0xffffffff),
+              border: selected
+                  ? null
+                  : Border.all(
+                      width: 1,
+                      color: Color(0xffcccccc),
+                    ),
+              borderRadius: BorderRadius.circular(16),
             ),
-            borderRadius: BorderRadius.circular(16),
           ),
-        ),
-        SizedBox(
-          width: 16,
-        ),
-        CoverImage(
-          image: vm.product.image,
-          width: 112,
-          height: 176,
         ),
         SizedBox(
           width: 16,
         ),
         Expanded(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                vm.product.name.toUpperCase(),
-                textAlign: TextAlign.left,
+            children: [
+              Row(
+                children: <Widget>[
+                  CoverImage(
+                    image: vm.product.image,
+                    width: 112,
+                    height: 176,
+                  ),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          vm.product.name.toUpperCase(),
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: Row(
+                            children: vm.colors
+                                .map(
+                                  (color) => ColorCheckbox(
+                                        product: vm.product,
+                                        color: color,
+                                        vm: vm,
+                                      ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 16, 0, 16),
+                          child: SizeSelect(
+                            product: vm.product,
+                            vm: vm,
+                          ),
+                        ),
+                        Text(
+                          "\$${vm.product.price / 100}",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Row(
-                  children: vm.colors
-                      .map(
-                        (color) => ColorCheckbox(
-                              product: vm.product,
-                              color: color,
-                              vm: vm,
-                            ),
-                      )
-                      .toList(),
-                ),
+              SizedBox(
+                height: 16,
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 16, 0, 8),
-                child: SizeSelect(
-                  product: vm.product,
-                  vm: vm,
-                ),
-              ),
-              Text(
-                "\$${vm.product.price / 100}",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+              Container(
+                height: 1,
+                color: Color(0xffeeeeee),
               ),
             ],
           ),

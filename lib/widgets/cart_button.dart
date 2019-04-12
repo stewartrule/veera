@@ -15,28 +15,25 @@ class CartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<RootState, int>(
-      converter: (Store<RootState> store) {
-        return store.state.basket.items.length;
-      },
-      builder: (
-        BuildContext context,
-        int itemCount,
-      ) {
-        return Container(
+    return StoreConnector<RootState, int>(converter: (Store<RootState> store) {
+      return store.state.basket.items.length;
+    }, builder: (
+      BuildContext context,
+      int itemCount,
+    ) {
+      return InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, '/basket');
+        },
+        child: Container(
           alignment: Alignment.center,
           child: Stack(
             children: <Widget>[
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/basket');
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(right: 4),
-                  child: Icon(
-                    FontAwesomeIcons.shoppingBag,
-                    color: color,
-                  ),
+              Padding(
+                padding: EdgeInsets.only(right: 4),
+                child: Icon(
+                  FontAwesomeIcons.shoppingBag,
+                  color: color,
                 ),
               ),
               itemCount > 0
@@ -62,8 +59,8 @@ class CartButton extends StatelessWidget {
                   : null
             ].where((x) => x != null).toList(),
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
   }
 }
