@@ -38,6 +38,14 @@ class BasketItemViewModel {
     store.dispatch(BasketUpdateFootwearAction(amount: 1, variant: variant));
   }
 
+  removeFootwear(FootwearModel footwear) {
+    store.dispatch(BasketRemoveFootwearAction(footwear: footwear));
+  }
+
+  removeFootwearVariant(FootwearVariantModel variant) {
+    store.dispatch(BasketRemoveFootwearVariantAction(variant: variant));
+  }
+
   static BasketItemViewModel fromStore(
     Store<RootState> store,
     FootwearModel product,
