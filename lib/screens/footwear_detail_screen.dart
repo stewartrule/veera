@@ -83,6 +83,23 @@ class FootwearDetailScreen extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [1, 2, 3, 4, 5].map(
+                            (rating) {
+                              return Container(
+                                padding: EdgeInsets.all(0),
+                                child: Icon(
+                                  Icons.star,
+                                  color: rating <= product.avgRating.round()
+                                      ? Colors.yellow.shade700
+                                      : Colors.black,
+                                ),
+                                // onPressed: () {},
+                              );
+                            },
+                          ).toList(),
+                        ),
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 16),
                           child: Row(
@@ -142,7 +159,7 @@ class FootwearDetailScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
                         child: Text(
-                          'MATCH WITH',
+                          'You may also like'.toUpperCase(),
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
@@ -153,6 +170,24 @@ class FootwearDetailScreen extends StatelessWidget {
                       HorizontalList(
                         footwear: vm.footwear
                             .where((prod) => prod.id != product.id)
+                            .where((prod) => prod.price > 5000)
+                            .toList(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
+                        child: Text(
+                          'On sale'.toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            height: 1,
+                          ),
+                        ),
+                      ),
+                      HorizontalList(
+                        footwear: vm.footwear
+                            .where((prod) => prod.id != product.id)
+                            .where((prod) => prod.price < 5000)
                             .toList(),
                       ),
                     ],
@@ -184,7 +219,7 @@ class HorizontalList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: itemHeight * 2,
+      height: itemHeight * 1.6,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: footwear
@@ -199,7 +234,7 @@ class HorizontalList extends StatelessWidget {
                         right: index == footwear.length - 1 ? 24 : 0,
                       ),
                       width: itemWidth,
-                      height: itemHeight * 2,
+                      height: itemHeight * 1.6,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -370,7 +405,7 @@ class QuickAddButton extends StatelessWidget {
             } else {
               vm.add();
 
-              showBottomCartSheet(context, vm.basket.items.length);
+              // showBottomCartSheet(context, vm.basket.items.length);
             }
           },
           child: Container(

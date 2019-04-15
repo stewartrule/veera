@@ -29,7 +29,7 @@ class FootwearModel {
   @JsonKey(nullable: false)
   final Map<dynamic, FootwearVariantModel> variants;
   @JsonKey(name: 'avg_rating')
-  final int avgRating;
+  final double avgRating;
 
   FootwearModel({
     @required this.id,
