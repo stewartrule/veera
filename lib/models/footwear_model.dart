@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart'
 import 'package:flutter/foundation.dart' show required;
 
 import './footwear_variant_model.dart';
+import './footwear_review_model.dart';
 import './image_model.dart';
 
 part 'footwear_model.g.dart';
@@ -28,6 +29,8 @@ class FootwearModel {
   final int reviewCount;
   @JsonKey(nullable: false)
   final Map<dynamic, FootwearVariantModel> variants;
+  @JsonKey(nullable: false)
+  final Map<dynamic, FootwearReviewModel> reviews;
   @JsonKey(name: 'avg_rating')
   final double avgRating;
 
@@ -44,6 +47,7 @@ class FootwearModel {
     @required this.inStock,
     @required this.reviewCount,
     @required this.variants,
+    @required this.reviews,
     @required this.avgRating,
   });
 

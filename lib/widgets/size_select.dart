@@ -62,8 +62,9 @@ class SizeSelect extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border.all(
                       width: 1,
-                      color: selected ? Colors.red : Colors.white,
+                      color: selected ? Color(0xff037E7C) : Colors.white,
                     ),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     size.eu.toString(),

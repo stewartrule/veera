@@ -29,7 +29,7 @@ class ColorCheckbox extends StatelessWidget {
       onTap: () {
         var item = vm.basket.items.firstWhere(
           (item) => item.variant.footwearId == product.id,
-          orElse: null,
+          orElse: () => null,
         );
 
         var variant = product.variants.values.firstWhere(
@@ -38,6 +38,7 @@ class ColorCheckbox extends StatelessWidget {
               (item is BasketItemModel
                   ? item.variant.sizeId == variant.sizeId
                   : true),
+          orElse: () => null,
         );
 
         if (variant is FootwearVariantModel) {
@@ -48,6 +49,7 @@ class ColorCheckbox extends StatelessWidget {
         margin: margin,
         decoration: BoxDecoration(
           border: Border.all(color: color.getColor(), width: 1),
+          borderRadius: BorderRadius.circular(4),
           color: canSelect ? color.getColor() : Color(0xffffff),
         ),
         width: 32,

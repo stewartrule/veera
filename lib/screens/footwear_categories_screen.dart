@@ -86,6 +86,7 @@ class Dashboard extends StatelessWidget {
                           width: double.infinity,
                           height: 280,
                           image: category.image,
+                          borderRadius: 0,
                         )
                       : null,
                   Positioned(
@@ -214,6 +215,7 @@ class _FootwearCategoryItem extends StatelessWidget {
                 width: double.infinity,
                 height: 120,
                 image: category.image,
+                borderRadius: 0,
               ),
               Container(
                 color: Color.fromARGB(90, 0, 0, 0),

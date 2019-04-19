@@ -9,11 +9,13 @@ class CoverImage extends StatelessWidget {
     @required this.image,
     @required this.width,
     @required this.height,
+    this.borderRadius = 4,
   }) : super(key: key);
 
   final double width;
   final double height;
   final ImageModel image;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +26,19 @@ class CoverImage extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: image.getColor().withAlpha(128),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: Stack(
         children: <Widget>[
-          FadeInImage(
-            width: double.infinity,
-            height: double.infinity,
-            placeholder: AssetImage('assets/images/1x1.png'),
-            fit: BoxFit.cover,
-            image: NetworkImage("${config.cdnUrl}/images/${image.src}"),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(borderRadius),
+            child: FadeInImage(
+              width: double.infinity,
+              height: double.infinity,
+              placeholder: AssetImage('assets/images/1x1.png'),
+              fit: BoxFit.cover,
+              image: NetworkImage("${config.cdnUrl}/images/${image.src}"),
+            ),
           ),
         ],
       ),

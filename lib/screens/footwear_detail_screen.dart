@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:intl/intl.dart';
 
 import '../widgets/cart_button.dart';
 import '../widgets/cover_image.dart';
@@ -13,6 +14,7 @@ import '../reducers/root_reducer.dart';
 
 import '../models/basket_model.dart';
 import '../models/footwear_model.dart';
+import '../models/footwear_review_model.dart';
 
 import '../view_models/basket_item_view_model.dart';
 
@@ -44,61 +46,117 @@ class FootwearDetailScreen extends StatelessWidget {
                   forceElevated: false,
                   elevation: 1,
                   floating: true,
-                  expandedHeight: 400,
-                  backgroundColor: product.image.getColor().withAlpha(128),
+                  backgroundColor: Colors.white,
+                  // expandedHeight: 400,
+                  // backgroundColor: product.image.getColor().withAlpha(128),
                   leading: InkWell(
                     onTap: () {
                       Navigator.pop(context);
                     },
                     child: Icon(
                       Icons.arrow_back,
+                      color: Colors.black,
                     ),
                   ),
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Stack(
-                      fit: StackFit.expand,
-                      children: <Widget>[
-                        CoverImage(
-                          image: product.image,
-                          width: double.infinity,
-                          height: 400,
-                        ),
-                      ],
-                    ),
-                  ),
+                  // flexibleSpace: FlexibleSpaceBar(
+                  //   background: Stack(
+                  //     fit: StackFit.expand,
+                  //     children: <Widget>[
+                  //       CoverImage(
+                  //         image: product.image,
+                  //         width: double.infinity,
+                  //         height: 400,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   actions: <Widget>[
-                    CartButton(color: Colors.white),
+                    CartButton(color: Colors.black),
                     SizedBox(width: 16),
                   ],
                 ),
                 SliverPadding(
-                  padding: EdgeInsets.all(24),
+                  padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate(
                       [
                         Text(
-                          product.name.toUpperCase(),
+                          product.name,
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 32,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Rating(rating: product.avgRating),
+                              Text(product.avgRating.toString()),
+                              QuickAddButton(
+                                footwear: product,
+                              ),
+                            ],
+                          ),
+                        ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [1, 2, 3, 4, 5].map(
-                            (rating) {
-                              return Container(
-                                padding: EdgeInsets.all(0),
-                                child: Icon(
-                                  Icons.star,
-                                  color: rating <= product.avgRating.round()
-                                      ? Colors.yellow.shade700
-                                      : Colors.black,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Expanded(
+                              child: Stack(
+                                children: <Widget>[
+                                  CoverImage(
+                                    image: product.image,
+                                    width: double.infinity,
+                                    height: 280,
+                                  ),
+                                  Positioned(
+                                    child: IconButton(
+                                      padding: EdgeInsets.all(0),
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.favorite,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    bottom: 0,
+                                    left: 0,
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                CoverImage(
+                                  image: product.image,
+                                  width: 64,
+                                  height: 64,
                                 ),
-                                // onPressed: () {},
-                              );
-                            },
-                          ).toList(),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                CoverImage(
+                                  image: product.image,
+                                  width: 64,
+                                  height: 64,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                CoverImage(
+                                  image: product.image,
+                                  width: 64,
+                                  height: 64,
+                                ),
+                              ],
+                            )
+                          ],
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 16),
@@ -130,6 +188,17 @@ class FootwearDetailScreen extends StatelessWidget {
                   delegate: SliverChildListDelegate(
                     [
                       Padding(
+                        padding: EdgeInsets.fromLTRB(24, 0, 24, 16),
+                        child: Text(
+                          'Select Color',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                            height: 1,
+                          ),
+                        ),
+                      ),
+                      Padding(
                         padding: EdgeInsets.only(left: 24),
                         child: Row(
                           children: vm.colors
@@ -144,8 +213,19 @@ class FootwearDetailScreen extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(24, 16, 0, 0),
-                        child: new SizeSelect(
+                        padding: EdgeInsets.fromLTRB(24, 16, 24, 0),
+                        child: Text(
+                          'Select Size',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                            height: 1,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(24, 8, 0, 0),
+                        child: SizeSelect(
                           product: product,
                           vm: vm,
                         ),
@@ -159,15 +239,30 @@ class FootwearDetailScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
                         child: Text(
-                          'You may also like'.toUpperCase(),
+                          'Reviews',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 24,
                             fontWeight: FontWeight.w700,
                             height: 1,
                           ),
                         ),
                       ),
-                      HorizontalList(
+                      HorizontalReviewList(
+                        itemWidth: 256,
+                        reviews: product.reviews.values.toList(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
+                        child: Text(
+                          'You may also like',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                            height: 1,
+                          ),
+                        ),
+                      ),
+                      HorizontalProductList(
                         footwear: vm.footwear
                             .where((prod) => prod.id != product.id)
                             .where((prod) => prod.price > 5000)
@@ -176,15 +271,15 @@ class FootwearDetailScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
                         child: Text(
-                          'On sale'.toUpperCase(),
+                          'On sale',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 24,
                             fontWeight: FontWeight.w700,
                             height: 1,
                           ),
                         ),
                       ),
-                      HorizontalList(
+                      HorizontalProductList(
                         footwear: vm.footwear
                             .where((prod) => prod.id != product.id)
                             .where((prod) => prod.price < 5000)
@@ -202,13 +297,42 @@ class FootwearDetailScreen extends StatelessWidget {
   }
 }
 
-class HorizontalList extends StatelessWidget {
+class Rating extends StatelessWidget {
+  final double rating;
+
+  const Rating({
+    Key key,
+    @required this.rating,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [1, 2, 3, 4, 5].map(
+        (r) {
+          return Container(
+            padding: EdgeInsets.all(0),
+            child: Icon(
+              Icons.star,
+              color:
+                  r <= rating.round() ? Colors.yellow.shade700 : Colors.black,
+            ),
+            // onPressed: () {},
+          );
+        },
+      ).toList(),
+    );
+  }
+}
+
+class HorizontalProductList extends StatelessWidget {
   final List<FootwearModel> footwear;
   final double itemWidth;
   final double itemHeight;
   final double spacing;
 
-  const HorizontalList({
+  const HorizontalProductList({
     Key key,
     @required this.footwear,
     this.itemWidth = 160,
@@ -284,6 +408,100 @@ class HorizontalList extends StatelessWidget {
                           QuickAddButton(
                             footwear: product,
                           )
+                        ],
+                      ),
+                    ),
+                  ),
+            )
+            .values
+            .toList(),
+      ),
+    );
+  }
+}
+
+class HorizontalReviewList extends StatelessWidget {
+  final List<FootwearReviewModel> reviews;
+  final double itemWidth;
+  final double itemHeight;
+  final double spacing;
+
+  const HorizontalReviewList({
+    Key key,
+    @required this.reviews,
+    this.itemWidth = 192,
+    this.itemHeight = 160,
+    this.spacing = 16,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var formatter = new DateFormat('yyyy-MM-dd');
+
+    return Container(
+      height: itemHeight,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: reviews
+            .asMap()
+            .map(
+              (index, review) => MapEntry(
+                    index,
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Color(0xffeeeeee),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      alignment: Alignment.topLeft,
+                      margin: EdgeInsets.only(
+                        left: index == 0 ? 24 : spacing,
+                        right: index == reviews.length - 1 ? 24 : 0,
+                      ),
+                      width: itemWidth,
+                      height: itemHeight,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                review.title,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Text(
+                                formatter.format(review.createdAt),
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Rating(
+                            rating: review.rating.toDouble(),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            review.description,
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 16,
+                            ),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     ),
@@ -409,11 +627,14 @@ class QuickAddButton extends StatelessWidget {
             }
           },
           child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: inBasket ? Color(0xff037E7C) : Color(0xfffc8183),
+            ),
             padding: EdgeInsets.symmetric(
               vertical: 4,
               horizontal: 8,
             ),
-            color: inBasket ? Color(0xff037E7C) : Color(0xfffc8183),
             child: Text(
               inBasket ? 'REMOVE' : 'ADD TO CART',
               style: TextStyle(color: Colors.white),

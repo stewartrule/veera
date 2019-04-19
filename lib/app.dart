@@ -34,7 +34,9 @@ class App extends StatelessWidget {
       store: store,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(fontFamily: 'RobotoCondensed'),
+        theme: ThemeData(
+          fontFamily: 'RobotoCondensed',
+        ),
         title: config.title,
         initialRoute: Routes.FootwearCategories,
         routes: {

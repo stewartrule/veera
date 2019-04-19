@@ -131,39 +131,42 @@ class _BasketScreenState extends State<BasketScreen> {
             ),
           ),
           bottomNavigationBar: editable
-              ? Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      top: BorderSide(
-                        width: 1,
-                        color: Color(0xffeeeeee),
+              ? SafeArea(
+
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        top: BorderSide(
+                          width: 1,
+                          color: Color(0xffeeeeee),
+                        ),
                       ),
                     ),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 16,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      SimpleButton(
-                        disabled: selected.length == 0,
-                        text: 'Remove',
-                        danger: true,
-                        onTap: () {
-                          vms
-                              .where((vm) => selected.contains(vm.product.id))
-                              .forEach((vm) => vm.removeFootwear(vm.product));
-                        },
-                      ),
-                      SimpleButton(
-                        disabled: selected.length == 0,
-                        text: 'Buy Later',
-                        onTap: () {},
-                      )
-                    ],
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 16,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        SimpleButton(
+                          disabled: selected.length == 0,
+                          text: 'Remove',
+                          danger: true,
+                          onTap: () {
+                            vms
+                                .where((vm) => selected.contains(vm.product.id))
+                                .forEach((vm) => vm.removeFootwear(vm.product));
+                          },
+                        ),
+                        SimpleButton(
+                          disabled: selected.length == 0,
+                          text: 'Buy Later',
+                          onTap: () {},
+                        )
+                      ],
+                    ),
                   ),
                 )
               : null,
